@@ -8,8 +8,33 @@
   height: 500px;
   border: 2px solid rgb(9, 9, 30);
   display: flex;
-  justify-content: center;
-  align-items: center;
   margin-left:40%;
   margin-top:10%;
+}
+.input{
+  height:40px;
+  width:300px;
+  font-size: 20px;
+}
+.add{
+  height: 40px;
+  width:50px;
+}
+
+.items{
+  margin-top: 20px;
+  font-size: 20px;
+}
+
+.delete{
+  margin-left:10px ;
+}
+
+.done{
+  margin-left: 10px;
+}
+
+.task{
+  margin-top: 9px;
+  font-size: 25px;
 }
