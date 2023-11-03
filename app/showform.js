@@ -1,116 +1,115 @@
 "use client"
 import React, { useState } from 'react';
+import Priority from './priotybox.js';
+import {deleteTask} from "./deleteTask.js"
+
 
 const TodoList = () => {
   const [userInput, setUserInput] = useState('');
-  const [todoList, setTodoList] = useState([]);
-  const [TaskAdd, setTaskAdd] = useState(false);
-  const [compTasks, setCompTasks] = useState([]);
-  const [taskPriority, setTaskPriority] = useState(1);
-  const [time, setTime] =useState('');
+  const [tasks, setTasks] = useState([]);
+  const [estimatedTime, setEstimatedTime] = useState(''); 
+
+
+  const selectedPriorityRef = React.useRef(1);
 
   const handleChange = (e) => {
     setUserInput(e.target.value);
   };
-
-  const handlePriorityChange = (e) => {
-    setTaskPriority(parseInt(e.target.value));
+  const handleTimeChange = (e) => {
+    setEstimatedTime(e.target.value);
   };
 
-  const handleTime = (e) => {
-    setTime(e.target.value);
-  };
+ 
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (userInput.trim() !== '' && !TaskAdd) {
-      setTodoList([...todoList, { text: userInput, priority: taskPriority,taskTime : time}]);
-      setUserInput('');
-      setTaskAdd(false);
-      setCompTasks([...compTasks, false]);
-      setTime('');
+    if (userInput.trim() !== '') {
+      const newTask = {
+        text: userInput,
+        priority: selectedPriorityRef.current,
+        estimatedTime: estimatedTime, 
+      };
 
+      setTasks([...tasks, newTask]);
+
+      setUserInput('');
+      setEstimatedTime('');
     }
   };
-
-  const handleTaskClick = (index) => {
-    const updatedTasks = [...compTasks];
-    updatedTasks[index] = !updatedTasks[index];
-    setCompTasks(updatedTasks);
+  const handleDeleteTask = (index) => {
+    const updatedTasks = deleteTask(tasks, index); 
+    setTasks(updatedTasks);
   };
-
-  const handleDelete = (index) => {
-    const updatedList = [...todoList];
-    updatedList.splice(index, 1);
-    setTodoList(updatedList);
-
-    const updatedTasks = [...compTasks];
-    updatedTasks.splice(index, 1);
-    setCompTasks(updatedTasks);
-  };
-
-  // Sorting function to sort tasks by priority
-  const sortTasksByPriority = () => {
-    const sortedTasks = [...todoList];
-    sortedTasks.sort((a, b) => a.priority - b.priority);
-    setTodoList(sortedTasks);
-  };
-
+  
   return (
     <div>
       <form onSubmit={handleSubmit}>
+        <h1 className="task-form">Task Form</h1>
+        <h2 className='h2'>TODO TASK</h2>
         <input
-          className='input'
-          type='text'
+          className="input"
+          type="text"
           value={userInput}
-          placeholder='Enter a todo list'
+          placeholder="Enter a task"
           onChange={handleChange}
         />
-        <select value={taskPriority} onChange={handlePriorityChange}>
-          <option value={1}>1</option>
-          <option value={2}>2</option>
-          <option value={3}>3</option>
-        </select>
+        <br />
+        <h2 className='h2'>PRIORITY NO FOR TASK</h2>
+        <Priority />
+        <br />
+        <h2 className='h2'>TIME FOR TASK</h2>
         <input
-          className='time-input'
-          type='text'
-          value={time}
-          placeholder='Time (e.g., 1 hour)'
-          onChange={handleTime}
+        className="input1"
+          type="text"
+          value={estimatedTime}
+          placeholder="Estimated Time (hours)"
+          onChange={handleTimeChange}
         />
-
-        <button className='add' type="submit" disabled={TaskAdd}>
-          Add
+        <br />
+        <button className="add" type="submit">
+          Add Task
         </button>
-        <button onClick={sortTasksByPriority}>Sort by Priority</button>
       </form>
-      <ul>
-        {todoList.length >= 1 ? (
-          todoList.map((todo, index) => (
-            <li
-              className="task"
-              key={index}
-              style={{ textDecoration: compTasks[index] ? 'line-through' : 'none' }}
-            >
-              <span onClick={() => handleTaskClick(index)}>{todo.text}</span>
-              <span className="priority-number">{todo.priority}</span>
-              <span className="time">{todo.taskTime}</span>
+      <table>
+        <thead>
+          <tr>
+            <th className="task-cell">Task</th>
+            <th className="task-cell">Priority</th>
+            <th className="task-cell">Estimated Time</th>
+            <th className="task-cell">Delete</th>
 
-              <button className='delete' onClick={() => handleDelete(index)}>
-                Delete
-              </button>
-              <button className='done' onClick={() => handleTaskClick(index)}>
-                Done
-              </button>
-            </li>
-          ))
-        ) : (
-          <p className='items'>Enter a todo item</p>
-        )}
-      </ul>
+          </tr>
+        </thead>
+        <tbody>
+          {tasks.map((task, index) => (
+            <tr key={index}>
+              <td className="task-cell">{task.text}</td>
+              <td className="task-cell">{task.priority}</td>
+              <td className="task-cell">{task.estimatedTime}</td>
+              <td className="task-cell">
+              <button
+                  onClick={() => handleDeleteTask(index)}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <img
+                    src="delete-button.svg"
+                    alt="Delete"
+                    width="20px"
+                    height="20px"
+                  />
+                </button>
+              </td> 
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
-}
+};
 
 export default TodoList;
