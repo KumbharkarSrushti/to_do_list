@@ -1,25 +1,23 @@
 "use client"
 import React, { useState } from 'react';
 import Priority from './priotybox.js';
-import {deleteTask} from "./deleteTask.js"
-
+import { deleteTask } from './deleteTask.js';
 
 const TodoList = () => {
   const [userInput, setUserInput] = useState('');
   const [tasks, setTasks] = useState([]);
-  const [estimatedTime, setEstimatedTime] = useState(''); 
-
+  const [estimatedTime, setEstimatedTime] = useState('');
+  const [newTodo, setNewTodo] = useState('');
 
   const selectedPriorityRef = React.useRef(1);
 
   const handleChange = (e) => {
     setUserInput(e.target.value);
   };
+
   const handleTimeChange = (e) => {
     setEstimatedTime(e.target.value);
   };
-
- 
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -28,7 +26,8 @@ const TodoList = () => {
       const newTask = {
         text: userInput,
         priority: selectedPriorityRef.current,
-        estimatedTime: estimatedTime, 
+        estimatedTime: estimatedTime,
+        checked: false, // Initialize checked property
       };
 
       setTasks([...tasks, newTask]);
@@ -37,16 +36,23 @@ const TodoList = () => {
       setEstimatedTime('');
     }
   };
+
   const handleDeleteTask = (index) => {
-    const updatedTasks = deleteTask(tasks, index); 
+    const updatedTasks = deleteTask(tasks, index);
     setTasks(updatedTasks);
   };
-  
+
+  const handleToggleTodo = (index) => {
+    const newTasks = [...tasks];
+    newTasks[index].checked = !newTasks[index].checked;
+    setTasks(newTasks);
+  };
+
   return (
     <div>
       <form onSubmit={handleSubmit}>
         <h1 className="task-form">Task Form</h1>
-        <h2 className='h2'>TODO TASK</h2>
+        <h2 className="h2">TODO TASK</h2>
         <input
           className="input"
           type="text"
@@ -55,12 +61,12 @@ const TodoList = () => {
           onChange={handleChange}
         />
         <br />
-        <h2 className='h2'>PRIORITY NO FOR TASK</h2>
+        <h2 className="h2">PRIORITY NO FOR TASK</h2>
         <Priority />
         <br />
-        <h2 className='h2'>TIME FOR TASK</h2>
+        <h2 className="h2">TIME FOR TASK</h2>
         <input
-        className="input1"
+          className="input1"
           type="text"
           value={estimatedTime}
           placeholder="Estimated Time (hours)"
@@ -78,17 +84,24 @@ const TodoList = () => {
             <th className="task-cell">Priority</th>
             <th className="task-cell">Estimated Time</th>
             <th className="task-cell">Delete</th>
-
+            <th className="task-cell">Done</th>
           </tr>
         </thead>
         <tbody>
           {tasks.map((task, index) => (
             <tr key={index}>
-              <td className="task-cell">{task.text}</td>
+              <td className="task-cell"><span
+                  style={{
+              
+                    textDecoration: task.checked ? 'line-through' : 'none',
+                  }}
+                >
+                  {task.text}
+                </span></td>
               <td className="task-cell">{task.priority}</td>
               <td className="task-cell">{task.estimatedTime}</td>
               <td className="task-cell">
-              <button
+                <button
                   onClick={() => handleDeleteTask(index)}
                   style={{
                     background: 'none',
@@ -103,7 +116,14 @@ const TodoList = () => {
                     height="20px"
                   />
                 </button>
-              </td> 
+              </td>
+              <td className="task-cell">
+                <input
+                  type="checkbox"
+                  checked={task.checked}
+                  onChange={() => handleToggleTodo(index)}
+                />
+                              </td>
             </tr>
           ))}
         </tbody>
@@ -113,3 +133,4 @@ const TodoList = () => {
 };
 
 export default TodoList;
+
