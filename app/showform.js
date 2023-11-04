@@ -8,9 +8,10 @@ const TodoList = () => {
   const [userInput, setUserInput] = useState('');
   const [tasks, setTasks] = useState([]);
   const [estimatedTime, setEstimatedTime] = useState(''); 
+  const [selectedPriority, setSelectedPriority] = useState(1); 
 
 
-  const selectedPriorityRef = React.useRef(1);
+  const selectedPriorityRef = React.useRef();
 
   const handleChange = (e) => {
     setUserInput(e.target.value);
@@ -27,7 +28,7 @@ const TodoList = () => {
     if (userInput.trim() !== '') {
       const newTask = {
         text: userInput,
-        priority: selectedPriorityRef.current,
+        priority: selectedPriority,
         estimatedTime: estimatedTime, 
       };
 
@@ -56,7 +57,7 @@ const TodoList = () => {
         />
         <br />
         <h2 className='h2'>PRIORITY NO FOR TASK</h2>
-        <Priority />
+        <Priority selectedPriority={selectedPriority} setSelectedPriority={setSelectedPriority} />
         <br />
         <h2 className='h2'>TIME FOR TASK</h2>
         <input

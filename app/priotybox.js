@@ -1,9 +1,6 @@
-"use client"
-import React, { useState } from 'react';
+import React from 'react';
 
-const Priority = () => {
-    const [selectedPriority, setSelectedPriority] = useState(1);
-
+const Priority = ({ selectedPriority, setSelectedPriority }) => {
     const handlePriorityChange = (e) => {
         setSelectedPriority(parseInt(e.target.value));
     };
